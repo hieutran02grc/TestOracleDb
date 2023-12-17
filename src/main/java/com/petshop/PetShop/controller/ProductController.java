@@ -5,28 +5,41 @@ import com.petshop.PetShop.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
+import java.util.List;
+import java.util.Optional;
+
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/products")
 public class ProductController {
 
     @Autowired
-    ProductService productService;
+    private ProductService productService;
 
-    @PostMapping("/add_product")
-    public ResponseEntity<Product> addLocation(@RequestBody Product product){
-        try {
-            Product addedProduct = productService.addProduct(product);
+    @GetMapping
+    public List<Product> getAllProducts() {
+        return productService.getAllProducts();
+    }
 
-            return new ResponseEntity<>(addedProduct, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    @GetMapping("/{id}")
+    public Optional<Product> getProductById(@PathVariable Integer id) {
+        return productService.getProductById(id);
+    }
 
+    @PostMapping
+    public Product saveProduct(@RequestBody Product product) {
+        return productService.saveProduct(product);
+    }
+
+    @PutMapping("/{id}")
+    public Product updateProduct(@PathVariable Integer id, @RequestBody Product product) {
+        product.setId(id); // Ensure the correct ID is set
+        return productService.saveProduct(product);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteProduct(@PathVariable Integer id) {
+        productService.deleteProduct(id);
     }
 }

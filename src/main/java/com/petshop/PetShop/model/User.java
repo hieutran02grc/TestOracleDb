@@ -13,7 +13,6 @@ public class User {
 
     public User() {}
 
-
     @Id
     private Integer ID;
 
